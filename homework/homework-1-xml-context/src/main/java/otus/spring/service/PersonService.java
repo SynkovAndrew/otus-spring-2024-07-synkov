@@ -4,5 +4,5 @@ import otus.spring.domain.Person;
 
 public interface PersonService {
 
-    Person getByFirstName(String FirstName);
+    Person getByFirstName(String firstName);
 }

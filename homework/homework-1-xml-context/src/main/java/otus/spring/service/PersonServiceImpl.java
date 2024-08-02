@@ -11,7 +11,7 @@ public class PersonServiceImpl implements PersonService {
     }
 
     @Override
-    public Person getByFirstName(String FirstName) {
-        return dao.findByFirstName(FirstName);
+    public Person getByFirstName(String firstName) {
+        return dao.findByFirstName(firstName);
     }
 }

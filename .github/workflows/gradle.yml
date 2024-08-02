@@ -22,8 +22,8 @@ jobs:
     - name: Setup Gradle
       uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5
 
-    - name: Build & Test 1
-      run: ./gradlew :lesson:module-1-lesson-1-xml-context:clean :lesson:module-1-lesson-1-xml-context:classes :lesson:module-1-lesson-1-xml-context:test
+    - name: Test Lesson module
+      run: ./gradlew :lesson:check-root
 
-    - name: Build & Test 2
-      run: ./gradlew :homework:homework-1-xml-context:clean :homework:homework-1-xml-context:classes :homework:homework-1-xml-context:test
+    - name: Test Homework module
+      run: ./gradlew :homework:check-root
