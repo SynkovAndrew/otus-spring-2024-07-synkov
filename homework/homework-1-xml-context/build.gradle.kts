@@ -9,7 +9,11 @@ plugins {
 
 dependencies {
     implementation("org.springframework:spring-context:6.1.11")
+    implementation("org.springframework:spring-core:6.1.11")
+    implementation("org.springframework:spring-beans:6.1.11")
+
     implementation("com.opencsv:opencsv:5.9")
+
     testImplementation(platform("org.junit:junit-bom:5.10.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.assertj:assertj-core:3.26.3")
@@ -28,12 +32,7 @@ tasks {
         manifest {
             attributes["Main-Class"] = "otus.spring.Application"
         }
-
-        transform(ServiceFileTransformer::class.java) {
-            setPath("META-INF")
-            include("spring.*")
-        }
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+        archiveClassifier = "fat"
     }
 
 /*    jar {

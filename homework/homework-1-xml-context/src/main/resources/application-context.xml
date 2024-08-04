@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns="http://www.springframework.org/schema/beans" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:util="http://www.springframework.org/schema/util"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/util
-        https://www.springframework.org/schema/util/spring-util.xsd">
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util.xsd">
 
     <bean id="applicationProperties" class="otus.spring.configuration.ApplicationProperties">
         <constructor-arg index="0" value="questions.csv"/>
@@ -15,7 +17,11 @@
 
     <bean id="ioService" class="otus.spring.service.StreamsIOService">
         <constructor-arg index="0">
-            <util:constant static-field="java.lang.System.out"/>
+            <!-- If modern commented syntaxes is used, then error appears when jar is ran by "java -jar". -->
+            <!-- Seems like the problem in jar packaging, but it couldn't be resolved finally. -->
+            <!-- <util:constant static-field="java.lang.System.out"/> -->
+            <bean id="java.lang.System.out"
+                  class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
         </constructor-arg>
     </bean>
 
