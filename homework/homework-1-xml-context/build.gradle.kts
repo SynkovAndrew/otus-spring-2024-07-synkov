@@ -34,17 +34,5 @@ tasks {
         }
         archiveClassifier = "fat"
     }
-
-/*    jar {
-        manifest {
-            attributes["Main-Class"] = "otus.spring.Application"
-        }
-        from(
-            configurations.runtimeClasspath.get()
-            .map { file -> file.takeIf { it.isDirectory } ?: zipTree(file) }
-        )
-        duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-        archiveBaseName = "homework-1-xml-context"
-    }*/
 }
 
