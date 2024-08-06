@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns="http://www.springframework.org/schema/beans"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                           http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/util
+                           http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <bean id="applicationProperties" class="otus.spring.configuration.ApplicationProperties">
+        <constructor-arg index="0" value="questions.csv"/>
+    </bean>
+
+    <bean id="questionDao" class="otus.spring.dao.QuestionCsvDao">
+        <constructor-arg index="0" ref="applicationProperties"/>
+    </bean>
+
+    <bean id="ioService" class="otus.spring.service.StreamsIOService">
+        <constructor-arg index="0">
+            <!-- If modern commented syntaxes is used, then error appears when jar is ran by "java -jar". -->
+            <!-- Seems like the problem in jar packaging, but it couldn't be resolved finally. -->
+            <!-- <util:constant static-field="java.lang.System.out"/> -->
+            <bean id="java.lang.System.out"
+                  class="org.springframework.beans.factory.config.FieldRetrievingFactoryBean" />
+        </constructor-arg>
+    </bean>
+
+    <bean id="testResultService" class="otus.spring.service.TestResultServiceImpl">
+        <constructor-arg index="0" ref="ioService"/>
+    </bean>
+
+    <bean id="testService" class="otus.spring.service.TestServiceImpl">
+        <constructor-arg index="0" ref="ioService"/>
+        <constructor-arg index="1" ref="questionDao"/>
+        <constructor-arg index="2" ref="testResultService"/>
+    </bean>
+
+    <bean id="testRunnerService" class="otus.spring.service.TestRunnerServiceImpl">
+        <constructor-arg index="0" ref="testService"/>
+    </bean>
+</beans>
