@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 import otus.spring.configuration.QuestionFileNameProvider;
 import otus.spring.dao.dto.QuestionDto;
 import otus.spring.domain.Question;
-import otus.spring.exception.FailedToReadQuestionsException;
+import otus.spring.exception.QuestionReadException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,7 +30,7 @@ public class QuestionCsvDao implements QuestionDao {
                     .map(QuestionDto::toDomain)
                     .toList();
         } catch (IOException exception) {
-            throw new FailedToReadQuestionsException(
+            throw new QuestionReadException(
                     "Failed to read questions from " + questionFileNameProvider.getFileName(),
                     exception
             );
@@ -41,6 +41,6 @@ public class QuestionCsvDao implements QuestionDao {
         return Optional.ofNullable(ClassLoader.getSystemResourceAsStream(fileName))
                 .map(InputStreamReader::new)
                 .map(BufferedReader::new)
-                .orElseThrow(() -> new FailedToReadQuestionsException("File " + fileName + " not found"));
+                .orElseThrow(() -> new QuestionReadException("File " + fileName + " not found"));
     }
 }

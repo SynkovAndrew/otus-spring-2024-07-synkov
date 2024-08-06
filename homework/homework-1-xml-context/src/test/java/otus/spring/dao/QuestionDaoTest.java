@@ -3,7 +3,7 @@ package otus.spring.dao;
 import org.junit.jupiter.api.Test;
 import otus.spring.domain.Answer;
 import otus.spring.domain.Question;
-import otus.spring.exception.FailedToReadQuestionsException;
+import otus.spring.exception.QuestionReadException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -29,7 +29,7 @@ public class QuestionDaoTest {
 
         assertThatThrownBy(dao::findAll)
                 .hasMessage("File not-found.csv not found")
-                .isInstanceOf(FailedToReadQuestionsException.class);
+                .isInstanceOf(QuestionReadException.class);
     }
 
     private List<Question> getExpectedQuestions() {
