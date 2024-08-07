@@ -1,16 +1,17 @@
 package otus.spring.service;
 
-import lombok.RequiredArgsConstructor;
-
 import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.Scanner;
 
-@RequiredArgsConstructor
 public class StreamsIOService implements IOService {
     private final PrintStream printStream;
+    private final Scanner scanner;
 
-    private final Scanner scanner = new Scanner(System.in);
+    public StreamsIOService(PrintStream printStream, InputStream inputStream) {
+        this.printStream = printStream;
+        this.scanner = new Scanner(inputStream);
+    }
 
     @Override
     public void printLine(String line) {

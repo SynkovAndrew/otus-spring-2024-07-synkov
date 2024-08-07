@@ -6,34 +6,32 @@ import otus.spring.domain.Question;
 import otus.spring.domain.Student;
 import otus.spring.domain.TestResult;
 
-import java.util.Objects;
-
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
     private final IOService ioService;
 
     private final QuestionDao questionDao;
 
+    private final StudentService studentService;
+
     private final TestResultService testResultService;
 
     @Override
     public void executeTest() {
-        ioService.printFormattedLine("First Name: ");
-        var firstName = ioService.readLine();
-
-        ioService.printFormattedLine("Last Name: ");
-        var lastName = ioService.readLine();
-
-        var student = new Student (firstName, lastName);
+        Student student = studentService.readCurrentStudent();
         TestResult testResult = new TestResult(student);
 
+        processQuestions(testResult);
+
+        testResultService.showResult(testResult);
+    }
+
+    void processQuestions(TestResult testResult) {
         ioService.printLine("");
         ioService.printLine("Please answer the questions below:");
         ioService.printLine("");
         questionDao.findAll()
                 .forEach(question -> processQuestion(question, testResult));
-
-        testResultService.showResult(testResult);
     }
 
     void processQuestion(Question question, TestResult testResult) {
