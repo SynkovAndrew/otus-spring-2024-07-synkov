@@ -6,11 +6,11 @@ import otus.spring.dao.PersonDao;
 import otus.spring.service.PersonService;
 import otus.spring.service.PersonServiceImpl;
 
-@Configuration
+/*@Configuration
 public class ServicesConfig {
 
     @Bean
     public PersonService personService(PersonDao dao) {
         return new PersonServiceImpl(dao);
     }
-}
+}*/

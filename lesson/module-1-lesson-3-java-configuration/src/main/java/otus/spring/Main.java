@@ -2,8 +2,6 @@ package otus.spring;
 
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.annotation.ComponentScan;
-import otus.spring.config.DaoConfig;
-import otus.spring.config.ServicesConfig;
 import otus.spring.domain.Person;
 import otus.spring.service.PersonService;
 

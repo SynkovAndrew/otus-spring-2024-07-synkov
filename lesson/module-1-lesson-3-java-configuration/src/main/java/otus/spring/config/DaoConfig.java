@@ -5,11 +5,11 @@ import org.springframework.context.annotation.Configuration;
 import otus.spring.dao.PersonDao;
 import otus.spring.dao.PersonDaoSimple;
 
-@Configuration
+/*@Configuration
 public class DaoConfig {
 
     @Bean
     public PersonDao personDaoSimple() {
         return new PersonDaoSimple();
     }
-}
+}*/
