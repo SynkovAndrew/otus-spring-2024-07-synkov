@@ -1,5 +1,3 @@
-import com.github.jengelman.gradle.plugins.shadow.transformers.ServiceFileTransformer
-
 plugins {
     id("java")
     id("checkstyle")
@@ -17,6 +15,7 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.3"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     testImplementation("org.assertj:assertj-core:3.26.3")
+    testImplementation("org.mockito:mockito-core:5.12.0")
 }
 
 checkstyle {

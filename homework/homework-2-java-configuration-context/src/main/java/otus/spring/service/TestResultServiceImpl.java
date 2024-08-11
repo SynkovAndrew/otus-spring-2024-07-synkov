@@ -1,9 +1,11 @@
 package otus.spring.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import otus.spring.configuration.TestConfiguration;
 import otus.spring.domain.TestResult;
 
+@Component
 @RequiredArgsConstructor
 public class TestResultServiceImpl implements TestResultService {
     private final IOService ioService;

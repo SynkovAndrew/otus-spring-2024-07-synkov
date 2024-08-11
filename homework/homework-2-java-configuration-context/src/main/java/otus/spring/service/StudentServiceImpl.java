@@ -1,8 +1,10 @@
 package otus.spring.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import otus.spring.domain.Student;
 
+@Component
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
     private final IOService ioService;
@@ -15,6 +17,6 @@ public class StudentServiceImpl implements StudentService {
         ioService.printFormattedLine("Last Name: ");
         var lastName = ioService.readLine();
 
-        return new Student (firstName, lastName);
+        return new Student(firstName, lastName);
     }
 }

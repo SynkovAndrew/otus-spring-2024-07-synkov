@@ -1,11 +1,13 @@
 package otus.spring.service;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import otus.spring.dao.QuestionDao;
 import otus.spring.domain.Question;
 import otus.spring.domain.Student;
 import otus.spring.domain.TestResult;
 
+@Component
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
     private final IOService ioService;

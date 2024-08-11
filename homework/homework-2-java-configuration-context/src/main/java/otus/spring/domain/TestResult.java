@@ -9,7 +9,9 @@ import java.util.Objects;
 @Data
 public class TestResult {
     private final Student student;
+
     private final List<Question> questions;
+
     private int correctAnswerCount;
 
     public TestResult(Student student) {
