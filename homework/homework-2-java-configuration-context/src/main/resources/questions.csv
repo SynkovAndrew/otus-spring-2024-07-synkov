@@ -1,3 +1,3 @@
-What is the largest country in the world?;Russia%true,India%false,China%false
-Which country has largest population?;China%true,Thailand%false,Germany%false
-What is the smallest country in the world?;Vatican%true,Italy%false,Bulgaria%false
+What is the largest country in the world?;1%Russia%true,2%India%false,3%China%false
+Which country has largest population?;1%China%true,2%Thailand%false,3%Germany%false
+What is the smallest country in the world?;1%Vatican%true,2%Italy%false,3%Bulgaria%false

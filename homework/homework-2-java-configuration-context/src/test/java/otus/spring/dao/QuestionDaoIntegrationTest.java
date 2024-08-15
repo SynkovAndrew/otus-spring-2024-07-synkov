@@ -37,15 +37,15 @@ public class QuestionDaoIntegrationTest {
                 new Question(
                         "What is the largest country in the world?",
                         Arrays.asList(
-                                new Answer("Russia", true),
-                                new Answer("India", false)
+                                new Answer(1, "Russia", true),
+                                new Answer(2, "India", false)
                         )
                 ),
                 new Question(
                         "Which country has largest population?",
                         Arrays.asList(
-                                new Answer("China", true),
-                                new Answer("Thailand", false)
+                                new Answer(1, "China", true),
+                                new Answer(2, "Thailand", false)
                         )
                 )
         );

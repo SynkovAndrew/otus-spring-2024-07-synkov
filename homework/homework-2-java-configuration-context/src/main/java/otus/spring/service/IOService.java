@@ -7,4 +7,6 @@ public interface IOService {
     void printFormattedLine(String line, Object ... arguments);
 
     String readLine();
+
+    Integer readInteger();
 }

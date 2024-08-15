@@ -2,9 +2,9 @@ package otus.spring.dao.dto;
 
 import otus.spring.domain.Answer;
 
-public record AnswerDto(String value, Boolean correct) {
+public record AnswerDto(Integer number, String value, Boolean correct) {
 
     Answer toDomain() {
-        return new Answer(value, correct);
+        return new Answer(number, value, correct);
     }
 }

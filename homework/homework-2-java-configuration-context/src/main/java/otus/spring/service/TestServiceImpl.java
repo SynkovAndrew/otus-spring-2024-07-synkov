@@ -42,10 +42,10 @@ public class TestServiceImpl implements TestService {
         ioService.printLine(question.value());
 
         question.answers()
-                .forEach(answer -> ioService.printFormattedLine("\t- %s\n", answer.value()));
+                .forEach(answer -> ioService.printFormattedLine("\t- %d. %s\n", answer.number(), answer.value()));
 
-        var answer = ioService.readLine();
-        var isCorrect = Objects.equals(question.getCorrectAnswer().value(), answer);
+        var input = ioService.readInteger();
+        var isCorrect = Objects.equals(question.getCorrectAnswer().number(), input);
 
         testResult.answerQuestion(question, isCorrect);
     }

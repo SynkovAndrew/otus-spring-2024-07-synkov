@@ -1,4 +1,4 @@
 package otus.spring.domain;
 
-public record Answer (String value, Boolean correct) {
+public record Answer(Integer number, String value, Boolean correct) {
 }

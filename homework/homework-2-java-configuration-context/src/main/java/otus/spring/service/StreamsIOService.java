@@ -28,4 +28,19 @@ public class StreamsIOService implements IOService {
     public String readLine() {
         return scanner.nextLine();
     }
+
+    @Override
+    public Integer readInteger() {
+        Integer input = null;
+
+        while (input == null) {
+            try {
+                input = Integer.valueOf(readLine());
+            } catch (NumberFormatException e) {
+                printLine("Please enter an integer");
+            }
+        }
+
+        return input;
+    }
 }

@@ -18,7 +18,6 @@ import java.io.PrintStream;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestResultServiceUnitTest {
 
@@ -65,11 +64,11 @@ public class TestResultServiceUnitTest {
     private TestResult getTestResult() {
         var testResult = new TestResult(new Student("Ivan", "Petrov"));
         testResult.answerQuestion(
-                new Question("What?", List.of(new Answer("That", true))),
+                new Question("What?", List.of(new Answer(1, "That", true))),
                 true
         );
         testResult.answerQuestion(
-                new Question("Why?", List.of(new Answer("Because", true))),
+                new Question("Why?", List.of(new Answer(2, "Because", true))),
                 true
         );
         return testResult;
