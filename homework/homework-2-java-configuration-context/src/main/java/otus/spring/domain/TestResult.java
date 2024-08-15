@@ -19,10 +19,10 @@ public class TestResult {
         this.questions = new ArrayList<>();
     }
 
-    public void answerQuestion(Question question, String answer) {
+    public void answerQuestion(Question question, Boolean isCorrect) {
         questions.add(question);
 
-        if (Objects.equals(question.getCorrectAnswer().value(), answer)) {
+        if (isCorrect) {
             correctAnswerCount++;
         }
     }

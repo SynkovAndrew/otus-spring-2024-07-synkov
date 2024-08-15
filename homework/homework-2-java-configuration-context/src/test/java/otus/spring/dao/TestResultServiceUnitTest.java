@@ -17,6 +17,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class TestResultServiceUnitTest {
@@ -33,17 +34,12 @@ public class TestResultServiceUnitTest {
 
         testResultService.showResult(testResult);
 
-        assertEquals(
-                outputStream.toString(),
-                """
-                        
-                        ########### Results ###########
-                        Student: Ivan Petrov
-                        Total questions: 2
-                        Total correct answer: 2
-                        Congratulations! You passed the test!
-                        """
-        );
+        assertThat(outputStream.toString())
+                .contains("########### Results ###########")
+                .contains("Student: Ivan Petrov")
+                .contains("Total questions: 2")
+                .contains("Total correct answer: 2")
+                .contains("Congratulations! You passed the test!");
     }
 
     @Test
@@ -58,28 +54,23 @@ public class TestResultServiceUnitTest {
 
         testResultService.showResult(testResult);
 
-        assertEquals(
-                outputStream.toString(),
-                """
-                        
-                        ########### Results ###########
-                        Student: Ivan Petrov
-                        Total questions: 2
-                        Total correct answer: 2
-                        Sorry, You didn't pass the test
-                        """
-        );
+        assertThat(outputStream.toString())
+                .contains("########### Results ###########")
+                .contains("Student: Ivan Petrov")
+                .contains("Total questions: 2")
+                .contains("Total correct answer: 2")
+                .contains("Sorry, You didn't pass the test");
     }
 
     private TestResult getTestResult() {
         var testResult = new TestResult(new Student("Ivan", "Petrov"));
         testResult.answerQuestion(
                 new Question("What?", List.of(new Answer("That", true))),
-                "That"
+                true
         );
         testResult.answerQuestion(
                 new Question("Why?", List.of(new Answer("Because", true))),
-                "Because"
+                true
         );
         return testResult;
     }

@@ -7,6 +7,8 @@ import otus.spring.domain.Question;
 import otus.spring.domain.Student;
 import otus.spring.domain.TestResult;
 
+import java.util.Objects;
+
 @Component
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
@@ -43,7 +45,8 @@ public class TestServiceImpl implements TestService {
                 .forEach(answer -> ioService.printFormattedLine("\t- %s\n", answer.value()));
 
         var answer = ioService.readLine();
+        var isCorrect = Objects.equals(question.getCorrectAnswer().value(), answer);
 
-        testResult.answerQuestion(question, answer);
+        testResult.answerQuestion(question, isCorrect);
     }
 }
