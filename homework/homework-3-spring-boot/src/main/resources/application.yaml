@@ -1,0 +1,7 @@
+spring:
+  application:
+    name:
+      homework-3-spring-boot
+application:
+  file-name: questions.csv
+  minimal-correct-answer-count: 2
