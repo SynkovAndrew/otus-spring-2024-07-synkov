@@ -7,14 +7,14 @@ import otus.spring.homework3springboot.domain.Student;
 @Component
 @RequiredArgsConstructor
 public class StudentServiceImpl implements StudentService {
-    private final IOService ioService;
+    private final LocalizedIOService ioService;
 
     @Override
     public Student readCurrentStudent() {
-        ioService.printFormattedLine("First Name: ");
+        ioService.printLocalizedFormattedLine("first.name.title");
         var firstName = ioService.readLine();
 
-        ioService.printFormattedLine("Last Name: ");
+        ioService.printFormattedLine("last.name.title");
         var lastName = ioService.readLine();
 
         return new Student(firstName, lastName);

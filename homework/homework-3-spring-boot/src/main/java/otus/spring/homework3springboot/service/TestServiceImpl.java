@@ -12,7 +12,7 @@ import java.util.Objects;
 @Component
 @RequiredArgsConstructor
 public class TestServiceImpl implements TestService {
-    private final IOService ioService;
+    private final LocalizedIOService ioService;
 
     private final QuestionDao questionDao;
 
@@ -32,7 +32,7 @@ public class TestServiceImpl implements TestService {
 
     void processQuestions(TestResult testResult) {
         ioService.printLine("");
-        ioService.printLine("Please answer the questions below:");
+        ioService.printLocalizedLine("answer.question.title");
         ioService.printLine("");
         questionDao.findAll()
                 .forEach(question -> processQuestion(question, testResult));
