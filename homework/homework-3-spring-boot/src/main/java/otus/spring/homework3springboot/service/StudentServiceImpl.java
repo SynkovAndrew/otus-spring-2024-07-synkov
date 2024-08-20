@@ -14,7 +14,7 @@ public class StudentServiceImpl implements StudentService {
         ioService.printLocalizedFormattedLine("first.name.title");
         var firstName = ioService.readLine();
 
-        ioService.printFormattedLine("last.name.title");
+        ioService.printLocalizedFormattedLine("last.name.title");
         var lastName = ioService.readLine();
 
         return new Student(firstName, lastName);

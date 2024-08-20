@@ -5,3 +5,4 @@ spring:
 application:
   file-name: questions.csv
   minimal-correct-answer-count: 2
+  locale: ru_RU
