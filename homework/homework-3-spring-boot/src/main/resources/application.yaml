@@ -3,6 +3,8 @@ spring:
     name:
       homework-3-spring-boot
 application:
-  file-name: questions.csv
   minimal-correct-answer-count: 2
   locale: ru_RU
+  file-name-by-locale:
+    ru_RU: questions_ru.csv
+    en_EN: questions.csv

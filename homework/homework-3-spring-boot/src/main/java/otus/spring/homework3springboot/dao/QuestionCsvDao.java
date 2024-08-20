@@ -3,6 +3,7 @@ package otus.spring.homework3springboot.dao;
 import com.opencsv.bean.CsvToBeanBuilder;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import otus.spring.homework3springboot.configuration.LocaleProvider;
 import otus.spring.homework3springboot.configuration.QuestionFileNameProvider;
 import otus.spring.homework3springboot.dao.dto.QuestionDto;
 import otus.spring.homework3springboot.domain.Question;
@@ -20,9 +21,11 @@ import java.util.Optional;
 public class QuestionCsvDao implements QuestionDao {
     private final QuestionFileNameProvider questionFileNameProvider;
 
+    private final LocaleProvider localeProvider;
+
     @Override
     public List<Question> findAll() {
-        try (Reader reader = getFilePath(questionFileNameProvider.getFileName())) {
+        try (Reader reader = getFilePath(getLocalizedFileName())) {
             return new CsvToBeanBuilder<QuestionDto>(reader)
                     .withType(QuestionDto.class)
                     .withSeparator(';')
@@ -33,10 +36,14 @@ public class QuestionCsvDao implements QuestionDao {
                     .toList();
         } catch (IOException exception) {
             throw new QuestionReadException(
-                    "Failed to read questions from " + questionFileNameProvider.getFileName(),
+                    "Failed to read questions from " + getLocalizedFileName(),
                     exception
             );
         }
+    }
+
+    private String getLocalizedFileName() {
+        return questionFileNameProvider.getFileName(localeProvider.getLocale());
     }
 
     private BufferedReader getFilePath(String fileName) {
