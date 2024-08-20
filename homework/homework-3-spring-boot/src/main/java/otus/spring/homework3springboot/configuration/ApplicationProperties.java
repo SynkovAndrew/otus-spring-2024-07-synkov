@@ -6,10 +6,14 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 
+import java.util.Locale;
+
 @Data
 @ConfigurationProperties("application")
-public class ApplicationProperties implements QuestionFileNameProvider, TestConfiguration {
+public class ApplicationProperties implements QuestionFileNameProvider, TestConfiguration, LocaleProvider {
     private final String fileName;
 
     private final int minimalCorrectAnswerCount;
+
+    private final Locale locale;
 }
