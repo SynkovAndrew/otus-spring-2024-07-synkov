@@ -47,7 +47,7 @@ public class QuestionCsvDao implements QuestionDao {
     }
 
     private BufferedReader getFilePath(String fileName) {
-        return Optional.ofNullable(ClassLoader.getSystemResourceAsStream(fileName))
+        return Optional.ofNullable(getClass().getResourceAsStream("/" + fileName))
                 .map(InputStreamReader::new)
                 .map(BufferedReader::new)
                 .orElseThrow(() -> new QuestionReadException("File " + fileName + " not found"));
