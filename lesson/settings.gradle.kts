@@ -7,5 +7,6 @@ include(
     "module-1-lesson-4-aop",
     "module-1-lesson-5-spring-boot",
     "module-1-lesson-6-bean-scope-lifecycle",
+    "module-1-lesson-7-bean-conditional-profile",
 )
 
