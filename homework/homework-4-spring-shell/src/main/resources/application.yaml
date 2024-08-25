@@ -1,0 +1,17 @@
+spring:
+  application:
+    name:
+      homework-4-spring-shell
+  shell:
+    script:
+      enabled: true
+    interactive:
+      enabled: true
+
+application:
+  minimal-correct-answer-count: 2
+  locale: en_EN
+  file-name-by-locale:
+    ru_RU: questions_ru.csv
+    en_EN: questions.csv
+

@@ -1,0 +1,12 @@
+spring:
+  shell:
+    script:
+      enabled: false
+    interactive:
+      enabled: false
+
+application:
+  minimal-correct-answer-count: 2
+  locale: en_EN
+  file-name-by-locale:
+    en_EN: test-questions.csv
