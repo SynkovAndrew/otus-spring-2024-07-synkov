@@ -23,7 +23,7 @@ jobs:
       uses: gradle/actions/setup-gradle@417ae3ccd767c252f5661f1ace9f835f9654f2b5
 
     - name: Test Lesson module
-      run: ./gradlew :lesson:check-root
+      run: ./gradlew :lesson:clean-root :lesson:build-root :lesson:check-root
 
     - name: Test Homework module
-      run: ./gradlew :homework:check-root
+      run: ./gradlew :homework:clean-root :homework:build-root :homework:check-root
