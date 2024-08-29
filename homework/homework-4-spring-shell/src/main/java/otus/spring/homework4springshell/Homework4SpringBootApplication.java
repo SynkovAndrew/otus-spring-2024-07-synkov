@@ -10,9 +10,7 @@ import otus.spring.homework4springshell.service.TestRunnerService;
 public class Homework4SpringBootApplication {
 
     public static void main(String[] args) {
-        var context = SpringApplication.run(Homework4SpringBootApplication.class, args);
-        var testRunnerService = context.getBean(TestRunnerService.class);
-        //testRunnerService.run();
+        SpringApplication.run(Homework4SpringBootApplication.class, args);
     }
 
 }
