@@ -16,4 +16,8 @@ public class DatabasePreparer {
     public void clearAuthors() {
         jdbcOperations.update("DELETE FROM author", Collections.emptyMap());
     }
+
+    public void clearGenres() {
+        jdbcOperations.update("DELETE FROM genre", Collections.emptyMap());
+    }
 }

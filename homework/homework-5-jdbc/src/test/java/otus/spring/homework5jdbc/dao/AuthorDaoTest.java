@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Import;
 import otus.spring.homework5jdbc.DatabasePreparer;
 import otus.spring.homework5jdbc.domain.Author;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,5 +54,35 @@ public class AuthorDaoTest {
                                 new Author(author.id(), "Ivan", "Nikolaev")
                         )
                 );
+    }
+
+    @Test
+    public void findAllAuthors() {
+        var tolstoy = authorDao.create(new AuthorDao.CreateAuthorContext("Lev", "Tolstoy"));
+        var bunin = authorDao.create(new AuthorDao.CreateAuthorContext("Ivan", "Bunin"));
+        var remark = authorDao.create(new AuthorDao.CreateAuthorContext("Erich", "Remark"));
+
+        assertThat(authorDao.findAll())
+                .usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .isEqualTo(Arrays.asList(tolstoy, bunin, remark));
+    }
+
+    @Test
+    public void deleteAuthor() {
+        var author = authorDao.create(new AuthorDao.CreateAuthorContext("Lev", "Tolstoy"));
+
+        authorDao.delete(author);
+
+        assertThat(authorDao.findById(author.id()))
+                .usingRecursiveComparison()
+                .isEqualTo(Optional.empty());
+    }
+
+    @Test
+    public void findAuthorByIdWhenNotExists() {
+        assertThat(authorDao.findById(999L))
+                .usingRecursiveComparison()
+                .isEqualTo(Optional.empty());
     }
 }

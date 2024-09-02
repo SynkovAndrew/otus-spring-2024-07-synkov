@@ -3,16 +3,19 @@ package otus.spring.homework5jdbc.dao;
 import otus.spring.homework5jdbc.domain.Genre;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface GenreDao {
 
-    Genre create(Genre genre);
+    Genre create(CreateGenreContext context);
 
-    Genre findById(Long id);
+    Optional<Genre> findById(Long id);
 
     List<Genre> findAll();
 
     Genre update(Genre genre);
 
-    Genre deleteById(Long id);
+    Genre delete(Genre genre);
+
+    record CreateGenreContext(String name) {}
 }
