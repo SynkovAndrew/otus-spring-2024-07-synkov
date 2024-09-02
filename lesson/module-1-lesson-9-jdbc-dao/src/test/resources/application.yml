@@ -8,3 +8,6 @@ spring:
       mode: always
       data-locations: data.sql
       #schema-locations: schema.sql
+
+  liquibase:
+    change-log: application.yml

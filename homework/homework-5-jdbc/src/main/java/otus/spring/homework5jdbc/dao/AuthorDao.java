@@ -3,16 +3,19 @@ package otus.spring.homework5jdbc.dao;
 import otus.spring.homework5jdbc.domain.Author;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AuthorDao {
 
-    void create(Author author);
+    Author create(CreateAuthorContext context);
 
-    Author findById(Long id);
+    Optional<Author> findById(Long id);
 
     List<Author> findAll();
 
-    void update(Author author);
+    Author update(Author author);
 
-    void deleteById(Long id);
+    Author delete(Author author);
+
+    record CreateAuthorContext(String firstName, String lastName) {}
 }
