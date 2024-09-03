@@ -15,12 +15,22 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
 public class JdbcBookDao implements BookDao {
-    private static final String SELECT_BOOK_SQL = "SELECT id, name FROM book";
+    private static final String SELECT_BOOK_SQL = """
+            SELECT b.id AS bookId, 
+                   b.title AS title, 
+                   g.id AS genreId, 
+                   g.name AS genreName, 
+            FROM book b 
+            JOIN genre g ON g.id = b.id 
+            LEFT JOIN book_to_author ba ON b.id = ba.book_id 
+            LEFT JOIN author a ON a.id = ba.author_id 
+            """;
 
     private final NamedParameterJdbcOperations jdbcOperations;
 
@@ -29,15 +39,35 @@ public class JdbcBookDao implements BookDao {
         KeyHolder keyHolder = new GeneratedKeyHolder();
 
         var params = new HashMap<String, Object>();
-        params.put("name", context.name());
+        params.put("title", context.title());
+        params.put("genreId", context.genre().id());
 
         jdbcOperations.update(
-                "INSERT INTO book(name) VALUES (:name)",
+                "INSERT INTO book(title, genre_id) VALUES (:title, :genreId)",
                 new MapSqlParameterSource(params),
                 keyHolder
         );
 
-        return new Book(keyHolder.getKeyAs(Long.class), context.name());
+        var bookId = keyHolder.getKeyAs(Long.class);
+
+        context.authors().forEach(author -> {
+                    var bookToAuthorParams = new HashMap<String, Object>();
+                    bookToAuthorParams.put("authorId", author.id());
+                    bookToAuthorParams.put("bookId", bookId);
+
+                    jdbcOperations.update(
+                            "INSERT INTO book_to_author(book_id, author_id) VALUES (:bookId, :authorId)",
+                            bookToAuthorParams
+                    );
+                }
+        );
+
+        return new Book(
+                keyHolder.getKeyAs(Long.class),
+                context.title(),
+                context.authors(),
+                context.genre()
+        );
     }
 
     @Override
@@ -45,7 +75,7 @@ public class JdbcBookDao implements BookDao {
         try {
             return Optional.ofNullable(
                     jdbcOperations.queryForObject(
-                            SELECT_GENRE_SQL + " WHERE id = :id",
+                            SELECT_BOOK_SQL + " WHERE b.id = :id",
                             Collections.singletonMap("id", id),
                             new BookRowMapper()
                     )
@@ -57,17 +87,17 @@ public class JdbcBookDao implements BookDao {
 
     @Override
     public List<Book> findAll() {
-        return jdbcOperations.query(SELECT_GENRE_SQL, new BookRowMapper());
+        return jdbcOperations.query(SELECT_BOOK_SQL, new BookRowMapper());
     }
 
     @Override
     public Book update(Book book) {
         var params = new HashMap<String, Object>();
-        params.put("name", book.name());
+        params.put("title", book.title());
         params.put("id", book.id());
 
         var result = jdbcOperations.update(
-                "UPDATE book SET name = :name WHERE id = :id",
+                "UPDATE book SET title = :title WHERE id = :id",
                 params
         );
 
@@ -95,10 +125,10 @@ public class JdbcBookDao implements BookDao {
 
         @Override
         public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return new Book(
+            return null;/*new Book(
                     rs.getLong("id"),
                     rs.getString("name")
-            );
+            );*/
         }
     }
 }

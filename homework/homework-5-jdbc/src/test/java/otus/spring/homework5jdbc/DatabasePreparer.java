@@ -13,6 +13,11 @@ public class DatabasePreparer {
         this.jdbcOperations = jdbcOperations;
     }
 
+    public void clearBooks() {
+        jdbcOperations.update("DELETE FROM book_to_author", Collections.emptyMap());
+        jdbcOperations.update("DELETE FROM book", Collections.emptyMap());
+    }
+
     public void clearAuthors() {
         jdbcOperations.update("DELETE FROM author", Collections.emptyMap());
     }
