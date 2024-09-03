@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
 @Import({JdbcGenreDao.class, DatabasePreparer.class})
@@ -38,7 +39,7 @@ public class GenreDaoTest {
 
         assertThat(genreDao.findById(genre.id()))
                 .usingRecursiveComparison()
-                .isEqualTo(Optional.of(genre));
+                .isEqualTo(genre);
     }
 
     @Test
@@ -49,11 +50,7 @@ public class GenreDaoTest {
 
         assertThat(genreDao.findById(genre.id()))
                 .usingRecursiveComparison()
-                .isEqualTo(
-                        Optional.of(
-                                new Genre(genre.id(), "Fantastic")
-                        )
-                );
+                .isEqualTo(new Genre(genre.id(), "Fantastic"));
     }
 
     @Test
@@ -74,15 +71,15 @@ public class GenreDaoTest {
 
         genreDao.delete(genre);
 
-        assertThat(genreDao.findById(genre.id()))
-                .usingRecursiveComparison()
-                .isEqualTo(Optional.empty());
+        assertThatThrownBy(() -> genreDao.findById(genre.id()))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("Genre(id="+ genre.id() + ") is not found");
     }
 
     @Test
     public void findGenreByIdWhenNotExists() {
-        assertThat(genreDao.findById(999L))
-                .usingRecursiveComparison()
-                .isEqualTo(Optional.empty());
+        assertThatThrownBy(() -> genreDao.findById(999L))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("Genre(id=999) is not found");
     }
 }

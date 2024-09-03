@@ -7,13 +7,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import otus.spring.homework5jdbc.DatabasePreparer;
+import otus.spring.homework5jdbc.domain.Author;
+import otus.spring.homework5jdbc.domain.Book;
 
-import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
 @Import({JdbcBookDao.class, JdbcAuthorDao.class, JdbcGenreDao.class, DatabasePreparer.class})
@@ -42,61 +43,102 @@ public class BookDaoTest {
         databasePreparer.clearBooks();
     }
 
-/*    @Test
-    public void createBook() {
+    @Test
+    public void updateBook() {
+        var levTolstoy = authorDao.create(new AuthorDao.CreateAuthorContext("Lev", "Tolstoy"));
+        var ivanBunin = authorDao.create(new AuthorDao.CreateAuthorContext("Ivan", "Bunin"));
+        var petrNaumov = authorDao.create(new AuthorDao.CreateAuthorContext("Petr", "Naumov"));
+        var novel = genreDao.create(new GenreDao.CreateGenreContext("Novel"));
+        var detective = genreDao.create(new GenreDao.CreateGenreContext("Detective"));
         var book = bookDao.create(
-                new BookDao.CreateBookContext("War and Peace", List.of(1L), 1L)
+                new BookDao.CreateBookContext("War and Peace", List.of(levTolstoy, ivanBunin), novel)
         );
+
+        bookDao.update(new Book(book.id(), "Black Swan", List.of(petrNaumov), detective));
 
         assertThat(bookDao.findById(book.id()))
                 .usingRecursiveComparison()
-                .isEqualTo(Optional.of(book));
+                .isEqualTo(new Book(book.id(), "Black Swan", List.of(petrNaumov), detective));
     }
 
     @Test
-    public void updateBook() {
-        var book = bookDao.create(new BookDao.CreateBookContext("Lev", "Tolstoy"));
-
-        bookDao.update(new Book(book.id(), "Ivan", "Nikolaev"));
-
-        assertThat(bookDao.findById(book.id()))
-                .usingRecursiveComparison()
-                .isEqualTo(
-                        Optional.of(
-                                new Book(book.id(), "Ivan", "Nikolaev")
-                        )
-                );
-    }*/
-
-    @Test
-    public void findAllBooks() throws SQLException {
-        var author = authorDao.create(new AuthorDao.CreateAuthorContext("Lev", "Tolstoy"));
+    public void createAndFindBookById() {
+        var levTolstoy = authorDao.create(new AuthorDao.CreateAuthorContext("Lev", "Tolstoy"));
+        var ivanBunin = authorDao.create(new AuthorDao.CreateAuthorContext("Ivan", "Bunin"));
         var genre = genreDao.create(new GenreDao.CreateGenreContext("Novel"));
         var warAndPeace = bookDao.create(
-                new BookDao.CreateBookContext("War and Peace", List.of(author), genre)
+                new BookDao.CreateBookContext("War and Peace", List.of(levTolstoy, ivanBunin), genre)
+        );
+
+        assertThat(bookDao.findById(warAndPeace.id()))
+                .usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .isEqualTo(warAndPeace);
+    }
+
+    @Test
+    public void createWhenAuthorNotExists() {
+        var levTolstoy = new Author(1L, "Lev", "Tolstoy");
+        var genre = genreDao.create(new GenreDao.CreateGenreContext("Novel"));
+        var createBookContext = new BookDao.CreateBookContext(
+                "War and Peace",
+                List.of(levTolstoy),
+                genre
+        );
+
+        assertThatThrownBy(() -> bookDao.create(createBookContext))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("Author(id=1) is not found");
+    }
+
+    @Test
+    public void findAllBooks() {
+        var levTolstoy = authorDao.create(new AuthorDao.CreateAuthorContext("Lev", "Tolstoy"));
+        var ivanBunin = authorDao.create(new AuthorDao.CreateAuthorContext("Ivan", "Bunin"));
+        var petrNaumov = authorDao.create(new AuthorDao.CreateAuthorContext("Petr", "Naumov"));
+        var novel = genreDao.create(new GenreDao.CreateGenreContext("Novel"));
+        var detective = genreDao.create(new GenreDao.CreateGenreContext("Detective"));
+        var warAndPeace = bookDao.create(
+                new BookDao.CreateBookContext("War and Peace", List.of(levTolstoy, ivanBunin), novel)
+        );
+        var blackStreet = bookDao.create(
+                new BookDao.CreateBookContext("Black Street", List.of(petrNaumov, ivanBunin), detective)
         );
 
         assertThat(bookDao.findAll())
                 .usingRecursiveComparison()
                 .ignoringCollectionOrder()
-                .isEqualTo(Arrays.asList(warAndPeace));
+                .isEqualTo(Arrays.asList(warAndPeace, blackStreet));
     }
 
- /*   @Test
+    @Test
+    public void findAllBooksWhenNoExists() {
+        assertThat(bookDao.findAll())
+                .usingRecursiveComparison()
+                .ignoringCollectionOrder()
+                .isEqualTo(List.of());
+    }
+
+    @Test
     public void deleteBook() {
-        var book = bookDao.create(new BookDao.CreateBookContext("Lev", "Tolstoy"));
+        var levTolstoy = authorDao.create(new AuthorDao.CreateAuthorContext("Lev", "Tolstoy"));
+        var ivanBunin = authorDao.create(new AuthorDao.CreateAuthorContext("Ivan", "Bunin"));
+        var genre = genreDao.create(new GenreDao.CreateGenreContext("Novel"));
+        var book = bookDao.create(
+                new BookDao.CreateBookContext("War and Peace", List.of(levTolstoy, ivanBunin), genre)
+        );
 
         bookDao.delete(book);
 
-        assertThat(bookDao.findById(book.id()))
-                .usingRecursiveComparison()
-                .isEqualTo(Optional.empty());
-    }*/
+        assertThatThrownBy(() -> bookDao.findById(book.id()))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("Book(id=" + book.id() + ") is not found");
+    }
 
     @Test
     public void findBookByIdWhenNotExists() {
-        assertThat(bookDao.findById(999L))
-                .usingRecursiveComparison()
-                .isEqualTo(Optional.empty());
+        assertThatThrownBy(() -> bookDao.findById(999L))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("Book(id=999) is not found");
     }
 }

@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @JdbcTest
 @Import({JdbcAuthorDao.class, DatabasePreparer.class})
@@ -38,7 +39,7 @@ public class AuthorDaoTest {
 
         assertThat(authorDao.findById(author.id()))
                 .usingRecursiveComparison()
-                .isEqualTo(Optional.of(author));
+                .isEqualTo(author);
     }
 
     @Test
@@ -49,11 +50,7 @@ public class AuthorDaoTest {
 
         assertThat(authorDao.findById(author.id()))
                 .usingRecursiveComparison()
-                .isEqualTo(
-                        Optional.of(
-                                new Author(author.id(), "Ivan", "Nikolaev")
-                        )
-                );
+                .isEqualTo(new Author(author.id(), "Ivan", "Nikolaev"));
     }
 
     @Test
@@ -74,15 +71,15 @@ public class AuthorDaoTest {
 
         authorDao.delete(author);
 
-        assertThat(authorDao.findById(author.id()))
-                .usingRecursiveComparison()
-                .isEqualTo(Optional.empty());
+        assertThatThrownBy(() -> authorDao.findById(author.id()))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("Author(id=" + author.id() + ") is not found");
     }
 
     @Test
     public void findAuthorByIdWhenNotExists() {
-        assertThat(authorDao.findById(999L))
-                .usingRecursiveComparison()
-                .isEqualTo(Optional.empty());
+        assertThatThrownBy(() -> authorDao.findById(999L))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessage("Author(id=999) is not found");
     }
 }
