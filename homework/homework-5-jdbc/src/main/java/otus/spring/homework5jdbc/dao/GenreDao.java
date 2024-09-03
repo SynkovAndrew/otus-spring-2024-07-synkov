@@ -9,7 +9,7 @@ public interface GenreDao {
 
     Genre create(CreateGenreContext context);
 
-    Optional<Genre> findById(Long id);
+    Genre findById(Long id);
 
     List<Genre> findAll();
 

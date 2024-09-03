@@ -13,10 +13,10 @@ public class AuthorShellComponent {
 
     @ShellMethod(key = "create-author")
     public String createAuthor(
-            @ShellOption(value = {"n", "firstName"}) String firstName,
-            @ShellOption(value = {"n", "lastName"}) String lastName
+            @ShellOption(value = {"fn", "first-name"}) String firstName,
+            @ShellOption(value = {"ln", "last-name"}) String lastName
     ) {
-       var author =  authorDao.create(new AuthorDao.CreateAuthorContext(firstName, lastName));
+       var author = authorDao.create(new AuthorDao.CreateAuthorContext(firstName, lastName));
 
        return author.toString() + " created!";
     }

@@ -11,7 +11,7 @@ public interface BookDao {
 
     Book create(CreateBookContext context);
 
-    Optional<Book> findById(Long id);
+    Book findById(Long id);
     
     List<Book> findAll();
 

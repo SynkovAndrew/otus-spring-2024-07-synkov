@@ -15,7 +15,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -46,17 +45,15 @@ public class JdbcAuthorDao implements AuthorDao {
     }
 
     @Override
-    public Optional<Author> findById(Long id) {
+    public Author findById(Long id) {
         try {
-            return Optional.ofNullable(
-                    jdbcOperations.queryForObject(
-                            SELECT_AUTHOR_SQL + " WHERE id = :id",
-                            Collections.singletonMap("id", id),
-                            new AuthorRowMapper()
-                    )
+            return jdbcOperations.queryForObject(
+                    SELECT_AUTHOR_SQL + " WHERE id = :id",
+                    Collections.singletonMap("id", id),
+                    new AuthorRowMapper()
             );
         } catch (EmptyResultDataAccessException exception) {
-            return Optional.empty();
+            throw new EntityNotFoundException("Author(id=" + id + ") is not found");
         }
     }
 

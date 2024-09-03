@@ -8,7 +8,9 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
 import org.springframework.jdbc.support.GeneratedKeyHolder;
 import org.springframework.jdbc.support.KeyHolder;
 import org.springframework.stereotype.Repository;
+import otus.spring.homework5jdbc.domain.Author;
 import otus.spring.homework5jdbc.domain.Book;
+import otus.spring.homework5jdbc.domain.Genre;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,15 +19,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 @RequiredArgsConstructor
 public class JdbcBookDao implements BookDao {
     private static final String SELECT_BOOK_SQL = """
             SELECT b.id AS bookId, 
-                   b.title AS title, 
+                   b.title AS bookTitle, 
                    g.id AS genreId, 
                    g.name AS genreName, 
+                   a.id AS authorId,
+                   a.first_name AS authorFirstName,
+                   a.last_name AS authorLastName,
             FROM book b 
             JOIN genre g ON g.id = b.id 
             LEFT JOIN book_to_author ba ON b.id = ba.book_id 
@@ -33,6 +39,8 @@ public class JdbcBookDao implements BookDao {
             """;
 
     private final NamedParameterJdbcOperations jdbcOperations;
+    private final GenreDao genreDao;
+    private final AuthorDao authorDao;
 
     @Override
     public Book create(CreateBookContext context) {
@@ -71,23 +79,38 @@ public class JdbcBookDao implements BookDao {
     }
 
     @Override
-    public Optional<Book> findById(Long id) {
+    public Book findById(Long id) {
         try {
-            return Optional.ofNullable(
-                    jdbcOperations.queryForObject(
-                            SELECT_BOOK_SQL + " WHERE b.id = :id",
-                            Collections.singletonMap("id", id),
-                            new BookRowMapper()
+            var bookReadEntities = jdbcOperations.query(
+                    SELECT_BOOK_SQL + " WHERE b.id = :id",
+                    Collections.singletonMap("id", id),
+                    new BookReadEntityRowMapper()
+            );
+            return new Book(
+                    bookReadEntities.getFirst().bookId(),
+                    bookReadEntities.getFirst().bookTitle(),
+                    bookReadEntities.stream()
+                            .map((entity) ->
+                                    new Author(
+                                            entity.authorId(),
+                                            entity.authorFirstName(),
+                                            entity.authorLastName()
+                                    )
+                            )
+                            .toList(),
+                    new Genre(
+                            bookReadEntities.getFirst().genreId(),
+                            bookReadEntities.getFirst().genreName()
                     )
             );
         } catch (EmptyResultDataAccessException exception) {
-            return Optional.empty();
+            throw new EntityNotFoundException("Book(id=" + id + ") is not found");
         }
     }
 
     @Override
     public List<Book> findAll() {
-        return jdbcOperations.query(SELECT_BOOK_SQL, new BookRowMapper());
+        return jdbcOperations.query(SELECT_BOOK_SQL, new BookReadEntityRowMapper());
     }
 
     @Override
@@ -121,14 +144,30 @@ public class JdbcBookDao implements BookDao {
         return book;
     }
 
-    private static class BookRowMapper implements RowMapper<Book> {
+    private static class BookReadEntityRowMapper implements RowMapper<BookReadEntity> {
 
         @Override
-        public Book mapRow(ResultSet rs, int rowNum) throws SQLException {
-            return null;/*new Book(
-                    rs.getLong("id"),
-                    rs.getString("name")
-            );*/
+        public BookReadEntity mapRow(ResultSet rs, int rowNum) throws SQLException {
+            return new BookReadEntity(
+                    rs.getLong("bookId"),
+                    rs.getString("bookTitle"),
+                    rs.getLong("genreId"),
+                    rs.getString("genreName"),
+                    rs.getLong("authorId"),
+                    rs.getString("authorFirstName"),
+                    rs.getString("authorLastName")
+            );
         }
+    }
+
+    private record BookReadEntity(
+            Long bookId,
+            String bookTitle,
+            Long genreId,
+            String genreName,
+            Long authorId,
+            String authorFirstName,
+            String authorLastName
+    ) {
     }
 }

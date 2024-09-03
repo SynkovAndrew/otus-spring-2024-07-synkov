@@ -42,17 +42,15 @@ public class JdbcGenreDao implements GenreDao {
     }
 
     @Override
-    public Optional<Genre> findById(Long id) {
+    public Genre findById(Long id) {
         try {
-            return Optional.ofNullable(
-                    jdbcOperations.queryForObject(
-                            SELECT_GENRE_SQL + " WHERE id = :id",
-                            Collections.singletonMap("id", id),
-                            new GenreRowMapper()
-                    )
+            return jdbcOperations.queryForObject(
+                    SELECT_GENRE_SQL + " WHERE id = :id",
+                    Collections.singletonMap("id", id),
+                    new GenreRowMapper()
             );
         } catch (EmptyResultDataAccessException exception) {
-            return Optional.empty();
+            throw new EntityNotFoundException("Genre(id=" + id + ") is not found");
         }
     }
 
