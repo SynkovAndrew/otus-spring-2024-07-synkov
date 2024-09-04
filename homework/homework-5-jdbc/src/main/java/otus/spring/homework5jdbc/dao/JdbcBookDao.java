@@ -1,7 +1,7 @@
 package otus.spring.homework5jdbc.dao;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcOperations;
@@ -17,7 +17,6 @@ import java.sql.SQLException;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Repository
@@ -55,7 +54,7 @@ public class JdbcBookDao implements BookDao {
 
         var bookId = keyHolder.getKeyAs(Long.class);
 
-        insertAuthors(context.authors(), bookId);
+        insertBookToAuthorRelations(context.authors(), bookId);
 
         return new Book(
                 bookId,
@@ -67,17 +66,17 @@ public class JdbcBookDao implements BookDao {
 
     @Override
     public Book findById(Long id) {
-            var bookReadEntities = jdbcOperations.query(
-                    SELECT_BOOK_SQL + " WHERE b.id = :id",
-                    Collections.singletonMap("id", id),
-                    new BookReadEntityRowMapper()
-            );
+        var bookReadEntities = jdbcOperations.query(
+                SELECT_BOOK_SQL + " WHERE b.id = :id",
+                Collections.singletonMap("id", id),
+                new BookReadEntityRowMapper()
+        );
 
-            if (bookReadEntities.isEmpty()) {
-                throw new EntityNotFoundException("Book(id=" + id + ") is not found");
-            }
+        if (bookReadEntities.isEmpty()) {
+            throw new DaoException.EntityNotFound("Book(id=" + id + ") is not found");
+        }
 
-            return collectBook(bookReadEntities);
+        return collectBook(bookReadEntities);
     }
 
     @Override
@@ -104,27 +103,27 @@ public class JdbcBookDao implements BookDao {
         );
 
         if (updateResult == 0) {
-            throw new EntityNotFoundException("Book(id=" + book.id() + ") is not found");
+            throw new DaoException.EntityNotFound("Book(id=" + book.id() + ") is not found");
         }
 
-        deleteAuthorRelations(book);
-        insertAuthors(book.authors(), book.id());
+        deleteBookToAuthorRelations(book);
+        insertBookToAuthorRelations(book.authors(), book.id());
 
         return book;
     }
 
     @Override
     public Book delete(Book book) {
+        deleteBookToAuthorRelations(book);
+
         var result = jdbcOperations.update(
                 "DELETE FROM book WHERE id = :id",
                 Collections.singletonMap("id", book.id())
         );
 
         if (result == 0) {
-            throw new EntityNotFoundException("Book(id=" + book.id() + ") is not found");
+            throw new DaoException.EntityNotFound("Book(id=" + book.id() + ") is not found");
         }
-
-        deleteAuthorRelations(book);
 
         return book;
     }
@@ -149,21 +148,29 @@ public class JdbcBookDao implements BookDao {
         );
     }
 
-    private void insertAuthors(List<Author> authors, Long bookId) {
+    private void insertBookToAuthorRelations(List<Author> authors, Long bookId) {
         authors.forEach(author -> {
                     var bookToAuthorParams = new HashMap<String, Object>();
                     bookToAuthorParams.put("authorId", author.id());
                     bookToAuthorParams.put("bookId", bookId);
 
-                    jdbcOperations.update(
-                            "INSERT INTO book_to_author(book_id, author_id) VALUES (:bookId, :authorId)",
-                            bookToAuthorParams
-                    );
+                    try {
+                        jdbcOperations.update(
+                                "INSERT INTO book_to_author(book_id, author_id) VALUES (:bookId, :authorId)",
+                                bookToAuthorParams
+                        );
+                    } catch (DataIntegrityViolationException dataIntegrityViolationException) {
+                        throw new DaoException.FailedToCreateEntityRelation(
+                                "Failed to create Book(id=" + bookId + ") to " +
+                                        "Author(id=" + author.id() + ") relation",
+                                dataIntegrityViolationException
+                        );
+                    }
                 }
         );
     }
 
-    private void deleteAuthorRelations(Book book) {
+    private void deleteBookToAuthorRelations(Book book) {
         jdbcOperations.update(
                 "DELETE FROM book_to_author bta WHERE bta.book_id = :bookId",
                 Collections.singletonMap("bookId", book.id())

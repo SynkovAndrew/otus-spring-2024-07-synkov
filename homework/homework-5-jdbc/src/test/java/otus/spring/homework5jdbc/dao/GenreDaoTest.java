@@ -72,14 +72,14 @@ public class GenreDaoTest {
         genreDao.delete(genre);
 
         assertThatThrownBy(() -> genreDao.findById(genre.id()))
-                .isInstanceOf(EntityNotFoundException.class)
+                .isInstanceOf(DaoException.EntityNotFound.class)
                 .hasMessage("Genre(id="+ genre.id() + ") is not found");
     }
 
     @Test
     public void findGenreByIdWhenNotExists() {
         assertThatThrownBy(() -> genreDao.findById(999L))
-                .isInstanceOf(EntityNotFoundException.class)
+                .isInstanceOf(DaoException.EntityNotFound.class)
                 .hasMessage("Genre(id=999) is not found");
     }
 }

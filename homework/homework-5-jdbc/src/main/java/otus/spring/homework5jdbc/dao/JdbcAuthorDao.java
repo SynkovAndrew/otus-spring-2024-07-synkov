@@ -53,7 +53,7 @@ public class JdbcAuthorDao implements AuthorDao {
                     new AuthorRowMapper()
             );
         } catch (EmptyResultDataAccessException exception) {
-            throw new EntityNotFoundException("Author(id=" + id + ") is not found");
+            throw new DaoException.EntityNotFound("Author(id=" + id + ") is not found");
         }
     }
 
@@ -75,7 +75,7 @@ public class JdbcAuthorDao implements AuthorDao {
         );
 
         if (result == 0) {
-            throw new EntityNotFoundException("Author(id=" + author.id() + ") is not found");
+            throw new DaoException.EntityNotFound("Author(id=" + author.id() + ") is not found");
         }
 
         return author;
@@ -89,7 +89,7 @@ public class JdbcAuthorDao implements AuthorDao {
         );
 
         if (result == 0) {
-            throw new EntityNotFoundException("Author(id=" + author.id() + ") is not found");
+            throw new DaoException.EntityNotFound("Author(id=" + author.id() + ") is not found");
         }
         return author;
     }

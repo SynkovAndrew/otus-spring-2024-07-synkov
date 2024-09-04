@@ -32,16 +32,22 @@
                 <constraints nullable="false"/>
             </column>
             <column name="genre_id" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false"
+                             foreignKeyName="book_genre_id_fk"
+                             references="genre(id)"/>
             </column>
         </createTable>
 
         <createTable tableName="book_to_author">
-            <column name="book_id" type="BIGINT">
-                <constraints nullable="false"/>
+            <column name="book_id" type="BIGINT" >
+                <constraints nullable="false"
+                             foreignKeyName="book_to_author_book_id_fk"
+                             references="book(id)"/>
             </column>
             <column name="author_id" type="BIGINT">
-                <constraints nullable="false"/>
+                <constraints nullable="false"
+                             foreignKeyName="book_to_author_author_id_fk"
+                             references="author(id)"/>
             </column>
         </createTable>
     </changeSet>

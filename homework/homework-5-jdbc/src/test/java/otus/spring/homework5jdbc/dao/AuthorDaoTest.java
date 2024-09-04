@@ -72,14 +72,14 @@ public class AuthorDaoTest {
         authorDao.delete(author);
 
         assertThatThrownBy(() -> authorDao.findById(author.id()))
-                .isInstanceOf(EntityNotFoundException.class)
+                .isInstanceOf(DaoException.EntityNotFound.class)
                 .hasMessage("Author(id=" + author.id() + ") is not found");
     }
 
     @Test
     public void findAuthorByIdWhenNotExists() {
         assertThatThrownBy(() -> authorDao.findById(999L))
-                .isInstanceOf(EntityNotFoundException.class)
+                .isInstanceOf(DaoException.EntityNotFound.class)
                 .hasMessage("Author(id=999) is not found");
     }
 }

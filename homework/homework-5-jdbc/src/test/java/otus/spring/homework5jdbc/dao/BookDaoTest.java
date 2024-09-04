@@ -41,6 +41,8 @@ public class BookDaoTest {
     @AfterEach
     public void cleanUp() {
         databasePreparer.clearBooks();
+        databasePreparer.clearAuthors();
+        databasePreparer.clearGenres();
     }
 
     @Test
@@ -87,8 +89,9 @@ public class BookDaoTest {
         );
 
         assertThatThrownBy(() -> bookDao.create(createBookContext))
-                .isInstanceOf(EntityNotFoundException.class)
-                .hasMessage("Author(id=1) is not found");
+                .isInstanceOf(DaoException.FailedToCreateEntityRelation.class)
+                .hasMessageContaining("Failed to create Book(id=")
+                .hasMessageContaining(") to Author(id=1) relation");
     }
 
     @Test
@@ -131,14 +134,14 @@ public class BookDaoTest {
         bookDao.delete(book);
 
         assertThatThrownBy(() -> bookDao.findById(book.id()))
-                .isInstanceOf(EntityNotFoundException.class)
+                .isInstanceOf(DaoException.EntityNotFound.class)
                 .hasMessage("Book(id=" + book.id() + ") is not found");
     }
 
     @Test
     public void findBookByIdWhenNotExists() {
         assertThatThrownBy(() -> bookDao.findById(999L))
-                .isInstanceOf(EntityNotFoundException.class)
+                .isInstanceOf(DaoException.EntityNotFound.class)
                 .hasMessage("Book(id=999) is not found");
     }
 }

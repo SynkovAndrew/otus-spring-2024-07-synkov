@@ -50,7 +50,7 @@ public class JdbcGenreDao implements GenreDao {
                     new GenreRowMapper()
             );
         } catch (EmptyResultDataAccessException exception) {
-            throw new EntityNotFoundException("Genre(id=" + id + ") is not found");
+            throw new DaoException.EntityNotFound("Genre(id=" + id + ") is not found");
         }
     }
 
@@ -71,7 +71,7 @@ public class JdbcGenreDao implements GenreDao {
         );
 
         if (result == 0) {
-            throw new EntityNotFoundException("Genre(id=" + genre.id() + ") is not found");
+            throw new DaoException.EntityNotFound("Genre(id=" + genre.id() + ") is not found");
         }
 
         return genre;
@@ -85,7 +85,7 @@ public class JdbcGenreDao implements GenreDao {
         );
 
         if (result == 0) {
-            throw new EntityNotFoundException("Genre(id=" + genre.id() + ") is not found");
+            throw new DaoException.EntityNotFound("Genre(id=" + genre.id() + ") is not found");
         }
         return genre;
     }
