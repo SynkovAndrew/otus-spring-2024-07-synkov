@@ -40,7 +40,10 @@ public class BookShellComponent {
             @ShellOption(value = {"g", "genre"}) Long genreId,
             @ShellOption(value = {"a", "authors"}) Long[] authorIds
     ) {
-        return bookDao.update(composeBook(id, title, authorIds, genreId)).toString() + " updated!";
+        var genre = genreDao.findById(genreId);
+        var authors = Arrays.stream(authorIds).map(authorDao::findById).toList();
+
+        return bookDao.update(new Book(id, title, authors, genre)).toString() + " updated!";
     }
 
     @ShellMethod(key = "find-book", group = SHELL_METHOD_GROUP)
@@ -56,19 +59,5 @@ public class BookShellComponent {
     @ShellMethod(key = "delete-book", group = SHELL_METHOD_GROUP)
     public String deleteBookById(@ShellOption(value = {"id"}) Long id) {
         return bookDao.delete(bookDao.findById(id)) + " deleted!";
-    }
-
-    private Book composeBook(
-            Long id,
-            String title,
-            Long[] authorIds,
-            Long genreId
-    ) {
-        return new Book(
-                id,
-                title,
-                Arrays.stream(authorIds).map(authorDao::findById).toList(),
-                genreDao.findById(genreId)
-        );
     }
 }
