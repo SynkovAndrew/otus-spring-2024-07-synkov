@@ -64,6 +64,21 @@ public class BookDaoTest {
     }
 
     @Test
+    public void updateWhenAuthorNotExists() {
+        var levTolstoy = new Author(999L, "Lev", "Tolstoy");
+        var petrNaumov = authorDao.create(new AuthorDao.CreateAuthorContext("Petr", "Naumov"));
+        var novel = genreDao.create(new GenreDao.CreateGenreContext("Novel"));
+        var book = bookDao.create(
+                new BookDao.CreateBookContext("War and Peace", List.of(petrNaumov), novel)
+        );
+
+        assertThatThrownBy(() -> bookDao.update(new Book(book.id(), book.title(), List.of(levTolstoy), book.genre())))
+                .isInstanceOf(DaoException.FailedToCreateEntityRelation.class)
+                .hasMessageContaining("Failed to create Book(id=")
+                .hasMessageContaining(") to Author(id=999) relation");
+    }
+
+    @Test
     public void createAndFindBookById() {
         var levTolstoy = authorDao.create(new AuthorDao.CreateAuthorContext("Lev", "Tolstoy"));
         var ivanBunin = authorDao.create(new AuthorDao.CreateAuthorContext("Ivan", "Bunin"));
