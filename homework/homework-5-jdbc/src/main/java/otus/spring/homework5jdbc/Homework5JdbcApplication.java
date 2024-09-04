@@ -14,5 +14,4 @@ public class Homework5JdbcApplication {
 
         SpringApplication.run(Homework5JdbcApplication.class, args);
     }
-
 }
