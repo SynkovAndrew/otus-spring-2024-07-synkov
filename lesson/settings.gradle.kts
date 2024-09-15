@@ -10,5 +10,6 @@ include(
     "module-1-lesson-7-bean-conditional-profile",
     "module-1-lesson-9-jdbc-dao",
     "module-1-lesson-10-orm-jpa",
+    "module-1-lesson-11-spring-orm",
 )
 
