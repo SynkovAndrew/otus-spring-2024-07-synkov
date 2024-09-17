@@ -6,5 +6,6 @@ include(
     "homework-3-spring-boot",
     "homework-4-spring-shell",
     "homework-5-jdbc",
+    "homework-6-orm",
 )
 
